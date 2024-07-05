@@ -23,7 +23,7 @@ export default async function Home() {
 
           <div className="py-6">
             <p>Search for existing Items</p>
-            <SearchItems />
+            <SearchItems clickable={true} />
           </div>
         </div>
       ) : (

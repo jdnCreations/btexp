@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
 
@@ -8,9 +9,16 @@ interface ItemProps {
   id: number;
   search?: boolean;
   onItemChecked: (id: number) => void;
+  clickable?: boolean;
 }
 
-const Item: React.FC<ItemProps> = ({ name, id, onItemChecked, search }) => {
+const Item: React.FC<ItemProps> = ({
+  name,
+  id,
+  onItemChecked,
+  search,
+  clickable,
+}) => {
   const markAsChecked = api.item.markChecked.useMutation({
     onSuccess: () => {
       onItemChecked(id);
@@ -26,7 +34,7 @@ const Item: React.FC<ItemProps> = ({ name, id, onItemChecked, search }) => {
 
   return (
     <div className="flex justify-between text-xl font-bold text-indigo-500">
-      <p>{name}</p>
+      <Link href={`items/edit/${id}`}>{name}</Link>
       {search ? null : <button onClick={handleMarkedAsChecked}>x</button>}
     </div>
   );
@@ -40,9 +48,14 @@ interface ItemListProps {
       }[]
     | undefined;
   search: boolean;
+  clickable: boolean;
 }
 
-export const ItemList: React.FC<ItemListProps> = ({ items, search }) => {
+export const ItemList: React.FC<ItemListProps> = ({
+  items,
+  search,
+  clickable,
+}) => {
   const [displayedItems, setDisplayedItems] = useState(items);
 
   const handleItemChecked = (checkedItemId: number) => {
@@ -62,6 +75,7 @@ export const ItemList: React.FC<ItemListProps> = ({ items, search }) => {
           id={item.id}
           onItemChecked={handleItemChecked}
           search={search}
+          clickable={clickable}
         />
       ))}
     </div>

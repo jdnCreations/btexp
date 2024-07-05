@@ -3,17 +3,10 @@
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
 import { ItemList } from "./item";
+import { useSearchItems } from "../helpers/useSearchItems";
 
-export function SearchItems() {
-  const [query, setQuery] = useState("");
-  const { data, isLoading, error } = api.item.search.useQuery({
-    query,
-  });
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
+export function SearchItems({ clickable }: { clickable: boolean }) {
+  const { query, data, isLoading, error, handleSearch } = useSearchItems();
   return (
     <div>
       <input
@@ -23,7 +16,9 @@ export function SearchItems() {
         placeholder="Search items..."
         className="rounded border p-2 font-bold text-purple-950"
       />
-      {data && <ItemList items={data} search={true} />}
+      {isLoading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {data && <ItemList items={data} search={true} clickable={clickable} />}
     </div>
   );
 }
